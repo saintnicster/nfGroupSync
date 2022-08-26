@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Comma seperated list of addresses that we should be connect to when syncing groups.  Please include protocol and trailing slash&#13;
+Example:&#13;
+https://cloud12345dev.service-now.com/,https://cloud12345test.service-now.com/</description>
+        <ignore_cache>true</ignore_cache>
+        <is_private>false</is_private>
+        <name>snGroupSync.destination_instances</name>
+        <read_roles/>
+        <suffix/>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>nick.fajardo@icf</sys_created_by>
+        <sys_created_on>2022-08-26 17:51:09</sys_created_on>
+        <sys_id>84f954b5972999102f15b0efe153af01</sys_id>
+        <sys_name>snGroupSync.destination_instances</sys_name>
+        <sys_package display_value="nfGroupSync" source="48e6dc7d97e599102f15b0efe153af6c">48e6dc7d97e599102f15b0efe153af6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="nfGroupSync">48e6dc7d97e599102f15b0efe153af6c</sys_scope>
+        <sys_update_name>sys_properties_84f954b5972999102f15b0efe153af01</sys_update_name>
+        <type>string</type>
+        <value>https://cloud12345dev.service-now.com/,https://cloud12345test.service-now.com/</value>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=84f954b5972999102f15b0efe153af01"/>
+</record_update>
