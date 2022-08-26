@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.nfGroupSender</api_name>
+        <caller_access>1</caller_access>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>nfGroupSender</name>
+        <script><![CDATA[var nfGroupSender = Class.create();
+nfGroupSender.prototype = {
+  initialize: function(groupGR) {
+    this._groupGR = groupGR;
+  },
+  generateGroupExport: function() {
+    var retObj = {};
+    retObj.group = nfGroupSender._groupToJSON(this._groupGR);
+
+    retObj.members = nfGroupSender._membersToJSON(this._groupGR);
+    retObj.roles = nfGroupSender._rolesToJSON(this._groupGR);
+
+    return retObj;
+  },
+  transmitGroup: function(action) {
+
+    var body = nfGroupSender._groupToJSON(this._groupGR);
+    if (!action) {
+      body.action = "delete";
+    }
+    var servers = gs.getProperty(nfGroupSyncConstants.PropertyKeys.destinations, "nope").split(',');
+
+    var rest = new sn_ws.RESTMessageV2(nfGroupSyncConstants.Scope + ".GroupSync", "Groups");
+    rest.setRequestBody(JSON.stringify());
+
+    servers.forEach(
+      function(server) {
+        var endpoint = rest.getEndpoint();
+        rest.setEndpoint(server + endpoint);
+        gs.info(rest.getEndpoint());
+      });
+  },
+  type: 'nfGroupSender'
+};
+nfGroupSender._groupToJSON = function(groupGR) {
+  var attrList = gs.getProperty(nfGroupSyncConstants.PropertyKeys.Attributes.group, "");
+  attrList = (attrList + ",name,sys_id").split(",");
+
+  var output = nfGroupSender._grToJSON(groupGR, attrList);
+
+
+  output.action = "update";
+  output.instance = gs.getProperty("instance_name");
+
+  return output;
+};
+nfGroupSender._membersToJSON = function(groupGR) {
+  var retVal = [];
+
+  var attrList = gs.getProperty(nfGroupSyncConstants.PropertyKeys.Attributes.groupMember, "");
+  attrList = (attrList + ",user").split(",");
+
+  var memGr = new GlideRecord("sys_user_grmember");
+  memGr.addQuery("group", groupGR.getUniqueValue());
+  memGr.query();
+  while (memGr.next()) {
+    var row = nfGroupSender._grToJSON(memGr, attrList);
+
+    retVal.push(row);
+  }
+  return retVal;
+};
+nfGroupSender._rolesToJSON = function(groupGR) {
+  var retVal = [];
+
+  var attrList = gs.getProperty(nfGroupSyncConstants.PropertyKeys.Attributes.groupRole, "");
+  attrList = (attrList + ",role").split(",");
+
+  var roleGr = new GlideRecord("sys_group_has_role");
+  roleGr.addQuery("group", groupGR.getUniqueValue());
+  roleGr.query();
+  while (roleGr.next()) {
+    var row = nfGroupSender._grToJSON(roleGr, attrList);
+
+    retVal.push(row);
+  }
+  return retVal;
+};
+nfGroupSender._grToJSON = function(gr, attrList) {
+  var output = {};
+
+  if (attrList.length > 0) {
+    for (i = 0; i < attrList.length; i++) {
+      var attr = attrList[i];
+      if (attr != "" && gr.isValidField(attr)) {
+        output[attr] = { "raw": gr.getValue(attr) || "", "display": gr.getDisplayValue(attr) };
+        if (output[attr].raw == output[attr].display) {
+          output[attr] = output[attr].raw;
+        }
+      }
+    }
+  }
+  return output;
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>nick.fajardo@icf</sys_created_by>
+        <sys_created_on>2022-08-26 17:39:18</sys_created_on>
+        <sys_id>7117d8b1972999102f15b0efe153af0c</sys_id>
+        <sys_name>nfGroupSender</sys_name>
+        <sys_package display_value="nfGroupSync" source="48e6dc7d97e599102f15b0efe153af6c">48e6dc7d97e599102f15b0efe153af6c</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="nfGroupSync">48e6dc7d97e599102f15b0efe153af6c</sys_scope>
+        <sys_update_name>sys_script_include_7117d8b1972999102f15b0efe153af0c</sys_update_name>
+    </sys_script_include>
+</record_update>
