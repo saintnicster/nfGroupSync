@@ -11,13 +11,13 @@
 
 nfGroupSyncConstants.Scope = "global";
 
-nfGroupSyncConstants.PropertyKeys = {};
-nfGroupSyncConstants.PropertyKeys.Attributes = {};
-nfGroupSyncConstants.PropertyKeys.Attributes.group = "snGroupSync.groupAttributesToSync";
-nfGroupSyncConstants.PropertyKeys.Attributes.groupMember = "snGroupSync.memberAttributesToSync";
-nfGroupSyncConstants.PropertyKeys.Attributes.groupRole = "snGroupSync.roleAttributesToSync";
-nfGroupSyncConstants.PropertyKeys.source = "snGroupSync.source_instance";
-nfGroupSyncConstants.PropertyKeys.destinations = "snGroupSync.destination_instances";]]></script>
+nfGroupSyncConstants.Properties = {};
+nfGroupSyncConstants.Properties.Attributes = {};
+nfGroupSyncConstants.Properties.Attributes.group = "nfGroupSync.groupAttributesToSync";
+nfGroupSyncConstants.Properties.Attributes.groupMember = "nfGroupSync.memberAttributesToSync";
+nfGroupSyncConstants.Properties.Attributes.groupRole = "nfGroupSync.roleAttributesToSync";
+nfGroupSyncConstants.Properties.source = "nfGroupSync.source_instance";
+nfGroupSyncConstants.Properties.destinations = "nfGroupSync.destination_instances";]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>nick.fajardo@icf</sys_created_by>
         <sys_created_on>2022-08-26 17:44:35</sys_created_on>

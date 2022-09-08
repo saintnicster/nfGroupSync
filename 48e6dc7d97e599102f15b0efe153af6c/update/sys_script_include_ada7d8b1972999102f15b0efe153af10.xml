@@ -9,73 +9,68 @@
         <name>nfGroupReceiver</name>
         <script><![CDATA[var nfGroupReceiver = Class.create();
 nfGroupReceiver.prototype = {
-  initialize: function() {},
+	initialize: function() {},
 
-  getGroupMember: function(groupName, memberSysID) {
-    var found = true;
+	getGroupMember: function(groupName, memberSysID) {
+		var found = true;
 
-    var grMemberGR = new GlideRecord("sys_user_grmember");
-    grMemberGR.addQuery("group.name", groupName);
-    grMemberGR.addQuery("user", memberSysID);
-    grMemberGR.query();
-    found = grMemberGR.next();
+		var grMemberGR = new GlideRecord("sys_user_grmember");
+		grMemberGR.addQuery("group.name", groupName);
+		grMemberGR.addQuery("user", memberSysID);
+		grMemberGR.query();
+		found = grMemberGR.next();
 
-    return (found) ? grMemberGR : null;
-  },
-  getGroupRole: function(groupName, roleName) {
-    var found = true;
+		return (found) ? grMemberGR : null;
+	},
+	getGroupRole: function(groupName, roleName) {
+		var found = true;
 
-    var grRoleGR = new GlideRecord("sys_group_has_role");
-    grRoleGR.addQuery("group.name", groupName);
-    grRoleGR.addQuery("role.name", roleName);
-    grRoleGR.query();
-    found = grRoleGR.next();
+		var grRoleGR = new GlideRecord("sys_group_has_role");
+		grRoleGR.addQuery("group.name", groupName);
+		grRoleGR.addQuery("role.name", roleName);
+		grRoleGR.query();
+		found = grRoleGR.next();
 
-    return (found) ? grRoleGR : null;
-  },
-  getGroup: function(name, sys_id) {
-    var found = true;
+		return (found) ? grRoleGR : null;
+	},
+	getGroup: function(name, sys_id) {
+		var found = true;
 
-    var groupGR = new GlideRecord('sys_user_group');
-    if (!groupGR.get(sys_id)) {
-      if (!groupGR.get("name", name)) {
-        found = false;
-      }
-    }
+		var groupGR = new GlideRecord('sys_user_group');
+		if (!groupGR.get(sys_id)) {
+			if (!groupGR.get("name", name)) {
+				found = false;
+			}
+		}
 
-    return (found) ? groupGR : null;
-  },
+		return (found) ? groupGR : null;
+	},
 
-  groupSync: function(data) {
+	groupSync: function(data) {
+		var group = this.getGroup(data.name, data.sys_id);
+		if (!group) {
+			if (data.action == "delete") {
+				return;
+			} else {
+				group = new GlideRecord('sys_user_group');
+				group.newRecord();
+				group.setValue("name");
+				if (data.sys_id) {
+					group.setNewGuidValue( data.sys_id );
+				}
+			}
+		}
 
-    var group = this.getGroup(data.name, data.sys_id);
-    if (!group) {
-      if (data.action == "delete") {
-        return;
-      } else {
-        group = new GlideRecord('sys_user_group');
-        group.newRecord();
-        group.setValue("name");
-        group.setNewGuidValue(data.sys_id);
-        group.insert();
-      }
-    }
+		if (data.action == "delete") {
+			group.deleteRecord();
+		} else {
+			attrList = nfGroupCommon.getGroupAttr();
+			nfGroupCommon.jsonToGR(data, group, attrList);
+			group.update();
+		}
+	},
 
-    if (data.action == "delete") {
-      group.deleteRecord();
-    } else {
-      if (group.getUniqueValue() != data.sys_id)
-        group.setValue("name", data.name);
-		
-      group.setValue("description", data.description);
-      group.setValue("type", data.type);
-      group.setValue("source", data.instance + ":" + data.sys_id);
-      group.update();
-    }
-  },
-
-
-  type: 'nfGroupReceiver'
+	type: 'nfGroupReceiver'
 };]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>nick.fajardo@icf</sys_created_by>
